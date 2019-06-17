@@ -21,74 +21,74 @@ public class Parallel {
 	
 	public static long startTime;
 	
-	//mapÀà
+	//mapç±»
 	public static class WeatherMapper extends Mapper<LongWritable, Text, Text, Text>{
-		private String file=null;		//Êı¾İ¼¯ÎÄ¼şÃû
+		private String file=null;		//æ•°æ®é›†æ–‡ä»¶å
 		public String regex="\\s+";
 		
 		@Override
-		//MapÀàµÄsetup():ÔÚÖ´ĞĞMapÈÎÎñÇ°£¬½øĞĞÏà¹Ø±äÁ¿»òÕß×ÊÔ´µÄ¼¯ÖĞ³õÊ¼»¯¹¤×÷¡£´Ë·½·¨±»MapReduce¿ò¼Ü½öÇÒÖ´ĞĞÒ»´Î¡£
+		//Mapç±»çš„setup():åœ¨æ‰§è¡ŒMapä»»åŠ¡å‰ï¼Œè¿›è¡Œç›¸å…³å˜é‡æˆ–è€…èµ„æºçš„é›†ä¸­åˆå§‹åŒ–å·¥ä½œã€‚æ­¤æ–¹æ³•è¢«MapReduceæ¡†æ¶ä»…ä¸”æ‰§è¡Œä¸€æ¬¡ã€‚
 		protected void setup(Context context)
 				throws IOException, InterruptedException {
-			// »ñÈ¡ÎÄ¼şÃû³Æ
+			// è·å–æ–‡ä»¶åç§°
 			file = ((FileSplit) context.getInputSplit()).getPath().getName();
 		}
 		@Override
-		//map·½·¨
+		//mapæ–¹æ³•
 		protected void map(LongWritable key, Text value, Context context)
 				throws IOException, InterruptedException {
-			//°´ĞĞ´¦ÀíÎÄ¼ş
+			//æŒ‰è¡Œå¤„ç†æ–‡ä»¶
 			String line = value.toString().trim();
 			String[] elements = line.split(regex);
-			//ÌáÈ¡³öi,j,k
+			//æå–å‡ºi,j,k
 			String i=elements[0];
 			String j=elements[1];
 			String k=elements[2];
 			
-			/*mapÊä³öµÄkeyÎªi,j,k¡£ÒÔ(i,j,k)½øĞĞ¹éÔ¼£¬keyÎªÍ¬Ò»¸öµÄ(i,j,k)µÄ»á±»·Öµ½reduceÉÏ*/
+			/*mapè¾“å‡ºçš„keyä¸ºi,j,kã€‚ä»¥(i,j,k)è¿›è¡Œå½’çº¦ï¼Œkeyä¸ºåŒä¸€ä¸ªçš„(i,j,k)çš„ä¼šè¢«åˆ†åˆ°reduceä¸Š*/
 			Text keyMapOut = new Text(i + "," + j + "," +k);
 			
 			Text valueMapOut = null;
 			
-			if (file.equals("A.txt")) 			//A.txtÊ±£¬mapÊä³öµÄvalue£º"a"±êÖ¾,aµÄÖµ
+			if (file.equals("A.txt")) 			//A.txtæ—¶ï¼Œmapè¾“å‡ºçš„valueï¼š"a"æ ‡å¿—,açš„å€¼
 			{			
 				String a=elements[elements.length-1];
 				valueMapOut = new Text("a,"+a);
             }
-			else if(file.equals("x.txt")) 		//x.txtÊ±£¬mapÊä³öµÄvalue£ºx±êÖ¾£¬xµÄÖµ
+			else if(file.equals("x.txt")) 		//x.txtæ—¶ï¼Œmapè¾“å‡ºçš„valueï¼šxæ ‡å¿—ï¼Œxçš„å€¼
 			{		
 				String x=elements[elements.length-1];
 				valueMapOut = new Text("x,"+x);
 			}
-			else 								//b.txtÊ±£¬mapÊä³öµÄvalue£ºb±êÖ¾£¬bµÄÖµ
+			else 								//b.txtæ—¶ï¼Œmapè¾“å‡ºçš„valueï¼šbæ ‡å¿—ï¼Œbçš„å€¼
 			{								
 				String b=elements[elements.length-1];
 				valueMapOut = new Text("b,"+b);
 			}
 			
-			//mapÊä³öµÄkeyÎª(i,j,k)£¬valueÎª(±êÖ¾,Öµ)
+			//mapè¾“å‡ºçš„keyä¸º(i,j,k)ï¼Œvalueä¸º(æ ‡å¿—,å€¼)
 			context.write(keyMapOut, valueMapOut);
 		}
 	}
-	//reduceÀà
+	//reduceç±»
 	public static class WeatherReducer extends Reducer<Text, Text, Text, DoubleWritable>{
 		
 		public static double sum=0;		
 		
 		@Override
-		//reduce·½·¨
+		//reduceæ–¹æ³•
 		protected void reduce(Text key, Iterable<Text> valueSet, Context context)
 				throws IOException, InterruptedException {
-			ArrayList<Double> aList=new ArrayList<Double>();		//aµÄÖµµÄ¼¯ºÏ
+			ArrayList<Double> aList=new ArrayList<Double>();		//açš„å€¼çš„é›†åˆ
 			double x=0;
 			double b=0;
 			double temp=0;
 			
-			//±éÀúÒ»¸ökey¶ÔÓ¦µÄvalue¼¯ºÏ
+			//éå†ä¸€ä¸ªkeyå¯¹åº”çš„valueé›†åˆ
 			for (Text value : valueSet) {
-                String[] line = value.toString().split(",");	//ÒÔ","½øĞĞ·Ö¸î
-                String flag=line[0];		//flagÎªa»òÕßx»òÕßb
-                String val=line[1];			//valueÎª¶ÔÓ¦µÄÖµ
+                String[] line = value.toString().split(",");	//ä»¥","è¿›è¡Œåˆ†å‰²
+                String flag=line[0];		//flagä¸ºaæˆ–è€…xæˆ–è€…b
+                String val=line[1];			//valueä¸ºå¯¹åº”çš„å€¼
                 if (flag.equals("a")) {
                     aList.add(Double.parseDouble(val));
                 } 
@@ -108,17 +108,17 @@ public class Parallel {
 			
 			sum+=temp;
 			
-			//reduceÊä³öµÄkeyÎª(i,j,k)£¬valueÎªÖĞ¼ä½á¹û
+			//reduceè¾“å‡ºçš„keyä¸º(i,j,k)ï¼Œvalueä¸ºä¸­é—´ç»“æœ
 			context.write(key, new DoubleWritable(temp));
 		}
 		
 		@Override
-		//ReduceÀàµÄcleanup():ÔÚÖ´ĞĞÍê±ÏReduceÈÎÎñºó£¬½øĞĞÏà¹Ø±äÁ¿»ò×ÊÔ´µÄÊÍ·Å¹¤×÷¡£´Ë·½·¨±»MapReduce¿ò¼Ü½öÇÒÖ´ĞĞÒ»´Î¡£
+		//Reduceç±»çš„cleanup():åœ¨æ‰§è¡Œå®Œæ¯•Reduceä»»åŠ¡åï¼Œè¿›è¡Œç›¸å…³å˜é‡æˆ–èµ„æºçš„é‡Šæ”¾å·¥ä½œã€‚æ­¤æ–¹æ³•è¢«MapReduceæ¡†æ¶ä»…ä¸”æ‰§è¡Œä¸€æ¬¡ã€‚
 		protected void cleanup(Context context)
 				throws IOException, InterruptedException {
 			double result=Math.pow(sum,0.5);
 			//result:	0.4464126889370711
-			//½«×îºóµÄ½á¹ûÊä³ö
+			//å°†æœ€åçš„ç»“æœè¾“å‡º
 			context.write(new Text("Result="), new DoubleWritable(result));
 			
 			long endTime=System.currentTimeMillis();
@@ -134,7 +134,7 @@ public class Parallel {
 		System.out.println("start");
 		
 		System.setProperty("hadoop.home.dir", "D:/hadoop-2.6.5");
-		//Êä³öÊäÈëÎÄ¼şÂ·¾¶
+		//è¾“å‡ºè¾“å…¥æ–‡ä»¶è·¯å¾„
 		String input1 = "hdfs://172.19.30.177:9000/input/parallel/A.txt";
         String input2 = "hdfs://172.19.30.177:9000/input/parallel/x.txt";
         String input3 = "hdfs://172.19.30.177:9000/input/parallel/b.txt";
@@ -157,13 +157,13 @@ public class Parallel {
         job.setInputFormatClass(TextInputFormat.class);
         job.setOutputFormatClass(TextOutputFormat.class);
         
-        //¼ÓÔØ3¸öÊäÈëÊı¾İ¼¯ÎÄ¼ş
+        //åŠ è½½3ä¸ªè¾“å…¥æ•°æ®é›†æ–‡ä»¶
         FileInputFormat.setInputPaths(job, 
         		new Path(input1),new Path(input2),new Path(input3));
         Path outputPath = new Path(output);
-        //É¾³ıÖ®Ç°µÄÊä³öÄ¿Â¼
+        //åˆ é™¤ä¹‹å‰çš„è¾“å‡ºç›®å½•
         outputPath.getFileSystem(conf).delete(outputPath, true);
-        //ÉèÖÃÊä³öÄ¿Â¼
+        //è®¾ç½®è¾“å‡ºç›®å½•
         FileOutputFormat.setOutputPath(job, outputPath);
 		
         System.exit(job.waitForCompletion(true) ? 0 : 1);

@@ -10,13 +10,13 @@ public class SerialType {
 	
 	public static void main(String[] args) throws Exception {
         
-		long startTime=System.currentTimeMillis();		//³ÌĞò¿ªÊ¼Ê±µÄÏµÍ³Ê±¼ä
+		long startTime=System.currentTimeMillis();		//ç¨‹åºå¼€å§‹æ—¶çš„ç³»ç»Ÿæ—¶é—´
 		System.out.println("start");
 		
 		double result=0,a=0,b=0,x=0;
-		String regex="\\s+";		//ÕıÔò±í´ïÊ½£¬Æ¥ÅäÒ»¸ö»òÕß¶à¸ö¿Õ°××Ö·û
+		String regex="\\s+";		//æ­£åˆ™è¡¨è¾¾å¼ï¼ŒåŒ¹é…ä¸€ä¸ªæˆ–è€…å¤šä¸ªç©ºç™½å­—ç¬¦
 		
-		/*´ò¿ªÎÄ¼ş£¬´´½¨ÊäÈëÁ÷£¬¶ÁÈ¡Êı¾İ*/
+		/*æ‰“å¼€æ–‡ä»¶ï¼Œåˆ›å»ºè¾“å…¥æµï¼Œè¯»å–æ•°æ®*/
 		String fileAPath="D:/data/paralleldata/A.txt";
 		File fileA=new File(fileAPath);
 		FileReader readerA=new FileReader(fileA);
@@ -35,11 +35,11 @@ public class SerialType {
 		for (int latitude=0; latitude<360; latitude++) {
 			for (int longitude=0; longitude<180; longitude++) {
 				for (int altitude=0; altitude<38; altitude++) {
-					double temp=0;		//tempÎªÖĞ¼ä½á¹û
-					//Ò»ĞĞÒ»ĞĞ¶ÁÈ¡£¬È¥³ıÁ½¶Ë¿Õ¸ñ
+					double temp=0;		//tempä¸ºä¸­é—´ç»“æœ
+					//ä¸€è¡Œä¸€è¡Œè¯»å–ï¼Œå»é™¤ä¸¤ç«¯ç©ºæ ¼
 					String xline=bufferedReaderX.readLine().trim();
 					if(xline!=null) {
-						//½«¶ÁÈ¡µÄ×Ö·û´®°´ÕÕ¿Õ°××Ö·û·Ö¸îÎª×Ö·û´®Êı×é
+						//å°†è¯»å–çš„å­—ç¬¦ä¸²æŒ‰ç…§ç©ºç™½å­—ç¬¦åˆ†å‰²ä¸ºå­—ç¬¦ä¸²æ•°ç»„
 						String[] xArray=xline.split(regex);
 						x=Double.parseDouble(xArray[3]);
 					}
@@ -61,7 +61,7 @@ public class SerialType {
 					temp=temp-b;
 					temp=Math.pow(temp, 2);
 					
-					//resultÀÛ¼ÓÖĞ¼ä½á¹ûtemp
+					//resultç´¯åŠ ä¸­é—´ç»“æœtemp
 					result+=temp;
 				}
 			}
@@ -69,10 +69,10 @@ public class SerialType {
 		
 		System.out.println("Result:  "+Math.pow(result, 0.5));
 		//Result:  0.4464126889370735
-		//¹Ø±ÕÎÄ¼şÁ÷
+		//å…³é—­æ–‡ä»¶æµ
 		bufferedReaderA.close();bufferedReaderX.close();bufferedReaderB.close();
-		long endTime=System.currentTimeMillis();	//³ÌĞò½áÊøÊ±µÄÏµÍ³Ê±¼ä
-		String time=(endTime-startTime)/1000+"s";	//ºÁÃëÊı³ıÒÔ1000×ª»»ÎªÃë
+		long endTime=System.currentTimeMillis();	//ç¨‹åºç»“æŸæ—¶çš„ç³»ç»Ÿæ—¶é—´
+		String time=(endTime-startTime)/1000+"s";	//æ¯«ç§’æ•°é™¤ä»¥1000è½¬æ¢ä¸ºç§’
 		System.out.println("Time:  "+time);
 		System.out.println("end");
 	}
